@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grade 8 ESL Interactive Lesson: 5W1H and Natural Disasters</title>
+  <style>
+    :root{
+      --bg-image: url('5W1H cover.png');
+      --nav:#3f2f24;
+      --nav2:#5f4b32;
+      --cream:#f7ead7;
+      --sand:#dfc7a4;
+      --clay:#b8734f;
+      --sage:#9caf88;
+      --moss:#6f7d52;
+      --terracotta:#c97856;
+      --brown:#3f2f24;
+      --ink:#2f241d;
+      --card:rgba(255,250,242,.96);
+      --shadow:0 18px 40px rgba(63,47,36,.20);
+      --radius:24px;
+      --zoom:1;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Times New Roman", Times, serif;
+      font-size:14px;
+      color:var(--ink);
+      background:linear-gradient(120deg,#efe1cc,#d8c2a5,#c8d3b0);
+      overflow:hidden;
+    }
+
+    .app{display:grid;grid-template-columns:260px 1fr;height:100vh;width:100vw;}
+    aside{
+      background:linear-gradient(180deg,var(--nav),var(--nav2));
+      color:white;
+      padding:18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      box-shadow:8px 0 30px rgba(0,0,0,.18);
+      z-index:5;
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+    .brand{padding:10px 12px 16px;border-bottom:1px solid rgba(255,255,255,.2)}
+    .brand h1{font-size:22px;margin:0 0 6px;line-height:1.15}.brand p{margin:0;font-size:13px;opacity:.85}
+    .navbtn{
+      border:0;color:white;text-align:left;border-radius:18px;padding:13px 14px;font-size:17px;font-weight:700;
+      background:rgba(255,255,255,.12);cursor:pointer;min-height:52px;transition:.2s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+      font-family:"Times New Roman", Times, serif;
+    }
+    .navbtn:hover,.navbtn.active{background:linear-gradient(135deg,var(--terracotta),var(--sage));transform:translateX(4px)}
+    .picker,.tools,.markerPanel{background:rgba(255,255,255,.12);border-radius:22px;padding:12px;flex-shrink:0}.picker h3,.tools h3,.markerPanel h3{margin:0 0 10px;font-size:17px}.pickrow,.toolrow{display:flex;gap:8px;flex-wrap:wrap}.pickrow button,.toolrow button{flex:1;border:0;border-radius:16px;padding:10px;font-size:18px;font-weight:800;cursor:pointer;background:var(--sand);color:var(--brown);font-family:"Times New Roman", Times, serif;min-width:68px}.markerColors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}.screenMarkerCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:20;pointer-events:none;touch-action:none}.screenMarkerCanvas.active{pointer-events:auto}.markerToggle.active{background:#d8e0c0!important}.markerColor{height:32px;border-radius:12px;border:3px solid rgba(255,255,255,.65);cursor:pointer}.markerColor.active{outline:4px solid var(--sand)}.markerSize{width:100%;accent-color:var(--sand)}.markerLabel{font-size:15px;font-weight:800;color:white;margin-top:6px}
+    #pickedNumber{font-size:44px;font-weight:900;text-align:center;line-height:1;background:var(--cream);color:var(--brown);border-radius:22px;padding:12px;margin-top:10px;box-shadow:var(--shadow);transition:.2s transform,.2s background}.drawing{animation:drawPulse .12s infinite alternate;background:#f3dfbd!important;transform:scale(1.06)}@keyframes drawPulse{from{transform:scale(1)}to{transform:scale(1.08)}}
+
+    main{position:relative;overflow:hidden}.slide{display:none;height:100vh;padding:34px;overflow-y:auto;transform:scale(var(--zoom));transform-origin:top left;width:calc(100% / var(--zoom));}.slide.active{display:block;animation:pop .35s ease}@keyframes pop{from{opacity:0;transform:scale(calc(var(--zoom) * .985))}to{opacity:1;transform:scale(var(--zoom))}}
+    .hero{
+      min-height:calc(100vh - 68px);border-radius:36px;background-image:var(--bg-image);
+      background-size:contain;background-repeat:no-repeat;background-position:center;background-color:#ffffff;box-shadow:var(--shadow);padding:54px;color:white;display:flex;flex-direction:column;justify-content:center;
+    }
+    .hero h2{font-size:76px;margin:0;letter-spacing:-1px}.hero p{font-size:30px;max-width:850px}.badge{display:inline-block;background:rgba(255,255,255,.22);padding:12px 18px;border-radius:999px;font-weight:800;width:max-content;margin-bottom:16px}
+    .title{font-size:44px;margin:0 0 10px;color:var(--brown)}.subtitle{font-size:22px;margin:0 0 24px;color:#6b5a46}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.card{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border:3px solid rgba(255,250,242,.8)}
+
+    .centerPanel{
+      max-width:900px;
+      margin:24px auto;
+      min-height:390px;
+      background:var(--card);
+      border-radius:38px;
+      padding:40px;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      border:5px solid rgba(255,250,242,.9);
+    }
+    .centerPanel.hidden{display:none}.centerPanel h3{font-size:58px;margin:0 0 16px;color:var(--brown)}.tag{display:inline-block;border-radius:999px;padding:7px 13px;font-size:20px;font-weight:800;background:#e8d9c4;color:var(--brown);margin:8px 0}.centerPanel p{font-size:30px;line-height:1.35;margin:10px 0}.centerPanel .example{font-size:26px;text-align:left;width:100%;max-width:780px}.example{background:#f3dfbd;border-left:8px solid var(--clay);padding:12px;border-radius:14px;margin-top:10px}
+    .controlRow{display:flex;justify-content:center;gap:16px;margin:18px 0}.whiteboardArea{display:none;margin-top:16px;background:#fff;border:4px solid #9caf88;border-radius:24px;padding:12px;box-shadow:var(--shadow)}.whiteboardArea.show{display:block}.whiteboardTools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}.whiteboardTools button{border:0;border-radius:14px;padding:10px 16px;font-size:18px;font-weight:900;background:var(--sand);color:var(--brown);font-family:"Times New Roman", Times, serif;cursor:pointer}.whiteboardCanvas{width:100%;height:360px;background:#ffffff;border:2px dashed #b8734f;border-radius:18px;touch-action:none;display:block}.bigBtn{border:0;border-radius:999px;padding:16px 26px;font-size:24px;font-weight:900;cursor:pointer;background:var(--sand);color:var(--brown);box-shadow:var(--shadow);font-family:"Times New Roman", Times, serif}.bigBtn.alt{background:#d8e0c0}
+
+    .miniGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.miniCard{background:var(--card);border-radius:20px;padding:14px 10px;text-align:center;font-size:21px;font-weight:900;box-shadow:var(--shadow);cursor:pointer;min-height:70px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(111,125,82,.18)}.miniCard:hover{background:#f3dfbd;transform:translateY(-3px)}
+    .vocabCard{font-size:34px}.wordBox{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.wordTile{background:#f3dfbd;border:3px solid #b8734f;border-radius:18px;padding:12px;text-align:center;font-size:28px;font-weight:900;cursor:grab;user-select:none;touch-action:none;box-shadow:var(--shadow)}.wrongMark{position:fixed;inset:0;display:none;align-items:center;justify-content:center;font-size:180px;font-weight:900;color:#dc2626;background:rgba(255,255,255,.35);z-index:99999;pointer-events:none}.wrongMark.show{display:flex;animation:xpop .45s ease}.correctMark{position:fixed;inset:0;display:none;align-items:center;justify-content:center;font-size:180px;font-weight:900;color:#16a34a;background:rgba(255,255,255,.35);z-index:99999;pointer-events:none}.correctMark.show{display:flex;animation:xpop .45s ease}@keyframes xpop{from{transform:scale(.7);opacity:.4}to{transform:scale(1);opacity:1}}.wordTile:active{cursor:grabbing}.chineseDropGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.dropTarget{background:var(--card);border:3px dashed #9caf88;border-radius:18px;min-height:100px;padding:10px;text-align:center;font-size:34px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center}.dropTarget.filled{border-style:solid;background:#d9ead3}.dropAnswer{font-size:28px;color:#3f2f24;margin-top:8px}.dragGhost{position:fixed;z-index:9999;pointer-events:none;opacity:.9;transform:scale(1.05)}.whCard{color:#3f2f24}#whButtons{grid-template-columns:repeat(3,1fr)}.wh0{background:#f7d9d0}.wh1{background:#d9ead3}.wh2{background:#d7e5f0}.wh3{background:#fff0c9}.wh4{background:#eadcf8}.wh5{background:#ffd9c7}
+
+    .disasterGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.disasterIcon{background:var(--card);border-radius:30px;padding:28px;min-height:210px;text-align:center;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid rgba(63,47,36,.08)}.disasterIcon:hover{transform:translateY(-5px);background:#f3dfbd}.disasterIcon .emoji{font-size:74px}.disasterIcon h3{font-size:26px;margin:14px 0 0}.articleReveal{display:none;margin-top:22px}.articleReveal.show{display:block}.articleReveal h3{font-size:50px;margin:0 0 10px;font-family:"Times New Roman", Times, serif}.articleReveal p{font-size:50px;line-height:1.2;font-family:"Times New Roman", Times, serif}.articlePhoto{width:100%;max-width:360px;border-radius:20px;box-shadow:0 10px 25px rgba(63,47,36,.22);background:#f7ead7;object-fit:cover}.newsExample{margin:14px 0;padding:16px;border-radius:20px;background:#f3dfbd;border-left:8px solid var(--clay)}.newsExample h4{font-size:25px;margin:0 0 8px}.newsExample p{font-size:21px;line-height:1.4;margin:6px 0}.lessonNewsBox{margin-top:18px;font-family:"Times New Roman", Times, serif}.lessonNewsBox h3{font-size:30px;margin:0 0 10px}.lessonNewsBox p{font-size:45px;line-height:1.2}.lessonNewsBox h3{font-size:45px}.lessonQuestion{display:none;font-size:20px;line-height:1.35;margin-top:8px}.questionSquare.open .lessonQuestion{display:block}.questionSquares{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:14px;margin-top:18px}.questionSquare{border-radius:22px;padding:16px;background:#f3dfbd;box-shadow:0 8px 18px rgba(63,47,36,.14);font-size:22px;line-height:1.3}.questionSquare b{font-size:30px;display:block;color:#3f2f24;margin-bottom:5px}.questionAnswer{display:none;margin-top:8px;font-size:20px;line-height:1.35}.questionSquare.open .questionAnswer{display:block}.qWho{background:#f7d9d0}.qWhat{background:#d9ead3}.qWhen{background:#fff0c9}.qWhere{background:#d7e5f0}.qWhy{background:#eadcf8}.qHow{background:#ffd9c7}.source{font-size:14px;color:#7a6a58}
+
+    .pillrow{display:flex;flex-wrap:wrap;gap:10px}.pill{border:0;border-radius:999px;padding:14px 18px;font-size:18px;font-weight:900;cursor:pointer;background:#e8d9c4;color:var(--brown);font-family:"Times New Roman", Times, serif}.pill:hover{background:#d8e0c0}.speakBox{font-size:34px;line-height:1.5;background:var(--card);border-radius:28px;padding:32px;box-shadow:var(--shadow);min-height:170px}.answer{display:none;background:#d8e0c0;border-left:8px solid var(--moss);border-radius:18px;padding:20px;margin-top:16px;font-size:28px}.show{display:block}.match{display:grid;grid-template-columns:1fr 1fr;gap:18px}.match button{border:0;border-radius:20px;padding:16px;font-size:19px;font-weight:900;cursor:pointer;background:var(--card);box-shadow:var(--shadow);font-family:"Times New Roman", Times, serif}.match button.selected{outline:6px solid var(--sand)}.match button.correct{background:#d9ead3}.match button.wrong{background:#f7d9d0}.score{font-size:24px;font-weight:900;background:var(--card);border-radius:18px;padding:12px 18px;display:inline-block}.footerNote{font-size:14px;color:#7a6a58;margin-top:20px}
+    @media(max-width:900px){.app{grid-template-columns:1fr}aside{position:fixed;bottom:0;left:0;right:0;height:170px;overflow-x:auto;flex-direction:row}.brand,.picker,.tools,.markerPanel{display:none}.navbtn{min-width:170px}.slide{padding-bottom:190px}.hero h2{font-size:48px}.hero p{font-size:22px}.centerPanel h3{font-size:42px}.centerPanel p{font-size:24px}.miniGrid,.disasterGrid,.questionSquares{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><h1>5W1H Disaster News</h1><p>Grade 8 ESL Interactive Lesson</p></div>
+    <button class="navbtn active" onclick="go(0)">1. Cover Page</button>
+    <button class="navbtn" onclick="go(1)">2. Vocabulary Review</button>
+    <button class="navbtn" onclick="go(2)">3. Lesson Content</button>
+    <button class="navbtn" onclick="go(3)">4. Application</button>
+    <button class="navbtn" onclick="go(4)">5. Review Game</button>
+    <div class="tools"><h3>Screen Options</h3><div class="toolrow"><button onclick="toggleFullScreen()">Full</button><button onclick="zoomIn()">Zoom +</button><button onclick="zoomOut()">Zoom -</button><button onclick="resetZoom()">Reset</button></div></div>
+    <div class="picker"><h3>Random Number Picker</h3><div class="pickrow"><button onclick="pickNum()">Random</button><button onclick="resetNum()">Reset</button></div><div id="pickedNumber">?</div></div>
+    <div class="markerPanel">
+      <h3>Whiteboard Marker</h3>
+      <div class="markerColors">
+        <button class="markerColor active" style="background:#2f241d" onclick="setMarkerColor('#2f241d',this)" title="Brown"></button>
+        <button class="markerColor" style="background:#dc2626" onclick="setMarkerColor('#dc2626',this)" title="Red"></button>
+        <button class="markerColor" style="background:#2563eb" onclick="setMarkerColor('#2563eb',this)" title="Blue"></button>
+        <button class="markerColor" style="background:#16a34a" onclick="setMarkerColor('#16a34a',this)" title="Green"></button>
+      </div>
+      <div class="markerLabel">Marker Size: <span id="markerSizeLabel">5</span></div>
+      <input class="markerSize" type="range" min="2" max="20" value="5" oninput="setMarkerSize(this.value)">
+      <div class="toolrow" style="margin-top:10px;"><button class="markerToggle" id="markerToggleBtn" onclick="toggleScreenMarker()">Marker On</button><button onclick="clearScreenMarker()">Clear</button></div>
+    </div>
+  </aside>
+
+  <div id="wrongMark" class="wrongMark">✖</div>
+  <div id="correctMark" class="correctMark">✓</div>
+  <main id="mainArea">
+    <canvas id="screenMarkerCanvas" class="screenMarkerCanvas"></canvas>
+    <section class="slide active">
+      <div class="hero"></div>
+    </section>
+
+    <section class="slide">
+      <h2 class="title">Vocabulary Review</h2>
+      <div class="card">
+        <h3 style="font-size:34px;margin:0 0 10px;">Word Box</h3>
+        <div class="wordBox" id="wordBox"></div>
+      </div>
+      <div class="chineseDropGrid" id="chineseDropGrid"></div>
+    </section>
+
+    <section class="slide">
+      <h2 class="title">Lesson Content: 5W1H</h2>
+      <div class="questionSquares" id="lessonQuestionSquares"></div>
+      <div class="card lessonNewsBox" id="lessonNewsBox"></div>
+      <div class="controlRow"><button class="bigBtn alt" onclick="prevLessonNews()">Previous</button><button class="bigBtn" onclick="nextLessonNews()">Next</button><button class="bigBtn" onclick="toggleWhiteboard('wb3')">Whiteboard</button></div>
+      <div class="whiteboardArea" id="wb3">
+        <div class="whiteboardTools"><button onclick="clearWhiteboard('canvas3')">Clear Board</button></div>
+        <canvas class="whiteboardCanvas" id="canvas3"></canvas>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="title">Application: Natural Disaster News</h2>
+      <div class="card articleReveal" id="articleBox"></div>
+      <div class="disasterGrid" id="newsIcons"></div>
+      <p class="footerNote">Teacher note: These are simplified classroom summaries. You may replace them with your own real news articles.</p>
+      <div class="controlRow"><button class="bigBtn" onclick="toggleWhiteboard('wb4')">Whiteboard</button></div>
+      <div class="whiteboardArea" id="wb4">
+        <div class="whiteboardTools"><button onclick="clearWhiteboard('canvas4')">Clear Board</button></div>
+        <canvas class="whiteboardCanvas" id="canvas4"></canvas>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2 class="title">Review Game</h2><p class="subtitle">Play the Wordwall game to practice 5W1H and natural disaster vocabulary.</p>
+      <div class="card" style="height:78vh; padding:16px; overflow:hidden;">
+        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; gap:20px;">
+          <img src="qrcode2.png" alt="QR Code 2" style="width:220px; height:220px; border-radius:18px; box-shadow:0 8px 20px rgba(0,0,0,.25);">
+          <a href="https://wordwall.net/embed/88e56eca1770471f8abc4ea70bd4f6c1?themeId=21&templateId=69&fontStackId=1" target="_blank" style="text-decoration:none;">
+            <button class="bigBtn" style="font-size:32px; padding:24px 42px; cursor:pointer;">Open Wordwall Review Game</button>
+          </a>
+        </div>
+      </div>
+      <p class="footerNote">Smartboard tip: Use the Full button on the left side, then tap Start inside the Wordwall game.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')], navs=[...document.querySelectorAll('.navbtn')];
+let currentSlideIndex=0;
+function go(i){slides.forEach(s=>s.classList.remove('active'));navs.forEach(n=>n.classList.remove('active'));slides[i].classList.add('active');navs[i].classList.add('active');currentSlideIndex=i;updateScreenMarkerState();resizeScreenMarker();}
+let usedNumbers=[];
+function pickNum(){
+ const display=document.getElementById('pickedNumber');
+ if(display.dataset.drawing==='yes')return;
+ display.dataset.drawing='yes';
+ display.classList.add('drawing');
+ let spins=0;
+ const spin=setInterval(()=>{
+   display.textContent=Math.floor(Math.random()*31)+1;
+   spins++;
+   if(spins>=18){
+     clearInterval(spin);
+     if(usedNumbers.length>=31){usedNumbers=[]}
+     let num;
+     do{num=Math.floor(Math.random()*31)+1}while(usedNumbers.includes(num));
+     usedNumbers.push(num);
+     display.textContent=num;
+     display.classList.remove('drawing');
+     display.dataset.drawing='no';
+   }
+ },80);
+}function resetNum(){usedNumbers=[];const display=document.getElementById('pickedNumber');display.textContent='?';display.classList.remove('drawing');display.dataset.drawing='no'}
+let zoomLevel=1;
+function setZoom(){document.documentElement.style.setProperty('--zoom', zoomLevel)}
+function zoomIn(){zoomLevel=Math.min(1.4, zoomLevel+0.1);setZoom()}
+function zoomOut(){zoomLevel=Math.max(0.75, zoomLevel-0.1);setZoom()}
+function resetZoom(){zoomLevel=1;setZoom()}
+function toggleFullScreen(){if(!document.fullscreenElement){document.documentElement.requestFullscreen()}else{document.exitFullscreen()}}
+
+const vocab=[
+ {zh:'地震',w:'earthquake',pos:'noun',m:'the ground shakes suddenly',ex:'The earthquake shook the school.'},
+ {zh:'颱風',w:'typhoon',pos:'noun',m:'a strong storm with heavy rain and wind',ex:'The typhoon brought heavy rain.'},
+ {zh:'洪水',w:'flood',pos:'noun / verb',m:'too much water on the land',ex:'The flood covered the road.'},
+ {zh:'拉',w:'pull',pos:'verb',m:'to move something closer to you',ex:'Pull the door to open it.'},
+ {zh:'推',w:'push',pos:'verb',m:'to move something away from you',ex:'Push the table carefully.'},
+ {zh:'遮蓋',w:'cover',pos:'verb / noun',m:'to put something over another thing',ex:'Cover your head during an earthquake.'},
+ {zh:'緊急避難包',w:'emergency bag',pos:'noun phrase',m:'a bag with things you need in an emergency',ex:'Put water and a flashlight in your emergency bag.'},
+ {zh:'新聞',w:'news',pos:'noun',m:'new information about what happened',ex:'We watched the news about the typhoon.'},
+ {zh:'收音機',w:'radio',pos:'noun',m:'a tool for listening to news and information',ex:'Use a radio during an emergency.'},
+ {zh:'疏散',w:'evacuate',pos:'verb',m:'to leave a dangerous place',ex:'People evacuate during a big flood.'},
+ {zh:'煙',w:'smoke',pos:'noun',m:'gray or black air from fire',ex:'Smoke came from the wildfire.'},
+ {zh:'手電筒',w:'flashlight',pos:'noun',m:'a small light you can carry',ex:'Use a flashlight when the power is out.'},
+ {zh:'蠟燭',w:'candle',pos:'noun',m:'a small stick of wax that gives light',ex:'We used a candle during the blackout.'},
+ {zh:'電梯',w:'elevator',pos:'noun',m:'a machine that carries people up and down in a building',ex:'Do not use the elevator during an earthquake.'},
+ {zh:'救援人員',w:'rescuer',pos:'noun',m:'a person who helps people in danger',ex:'The rescuer helped the family leave the flood.'}
+];
+let vocabIndex=0;
+const wordBox=document.getElementById('wordBox');
+const chineseDropGrid=document.getElementById('chineseDropGrid');
+wordBox.innerHTML=vocab.map((v,i)=>`<div class="wordTile" data-index="${i}">${v.w}</div>`).join('');
+const alphabet='abcdefghijklmnopqrstuvwxyz'.split('');
+chineseDropGrid.innerHTML=vocab.map((v,i)=>`<div class="dropTarget" data-index="${i}"><div>${alphabet[i]}. ${v.zh}</div><div class="dropAnswer"></div></div>`).join('');
+let dragTile=null, ghost=null, selectedIndex=null;
+document.querySelectorAll('.wordTile').forEach(tile=>{
+  tile.addEventListener('pointerdown',startDrag);
+  tile.addEventListener('click',()=>{selectedIndex=tile.dataset.index;document.querySelectorAll('.wordTile').forEach(t=>t.style.outline='none');tile.style.outline='6px solid #9caf88';});
+});
+document.querySelectorAll('.dropTarget').forEach(target=>{
+  target.addEventListener('click',()=>{if(selectedIndex!==null){fillTarget(target,selectedIndex);selectedIndex=null;document.querySelectorAll('.wordTile').forEach(t=>t.style.outline='none');}});
+});
+function startDrag(e){
+  dragTile=e.currentTarget;
+  selectedIndex=dragTile.dataset.index;
+  ghost=dragTile.cloneNode(true);
+  ghost.classList.add('dragGhost');
+  document.body.appendChild(ghost);
+  moveGhost(e.clientX,e.clientY);
+  dragTile.setPointerCapture(e.pointerId);
+  dragTile.addEventListener('pointermove',dragMove);
+  dragTile.addEventListener('pointerup',endDrag,{once:true});
+}
+function dragMove(e){moveGhost(e.clientX,e.clientY)}
+function moveGhost(x,y){if(ghost){ghost.style.left=(x-70)+'px';ghost.style.top=(y-25)+'px';}}
+function endDrag(e){
+  dragTile.removeEventListener('pointermove',dragMove);
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const target=el?el.closest('.dropTarget'):null;
+  if(target){fillTarget(target,selectedIndex)}
+  if(ghost){ghost.remove();ghost=null}
+  dragTile=null;selectedIndex=null;
+}
+function fillTarget(target,index){
+  const v=vocab[index];
+  if(String(index)===target.dataset.index){
+    target.classList.add('filled');
+    target.querySelector('.dropAnswer').innerHTML=`${v.w}<br><span style="font-size:20px;font-weight:700;">${v.pos} · ${v.m}<br>${v.ex}</span>`;
+    const matchedTile=document.querySelector(`.wordTile[data-index="${index}"]`);
+    if(matchedTile){matchedTile.remove();}
+    playCorrectSound();
+    showCorrectCheck();
+  }else{
+    playBuzzer();
+    showWrongX();
+    target.style.background='#f7d9d0';
+    setTimeout(()=>target.style.background='',400);
+  }
+}
+function playBuzzer(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AudioContext();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type='square';
+    osc.frequency.setValueAtTime(120,ctx.currentTime);
+    gain.gain.setValueAtTime(0.18,ctx.currentTime);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime+0.35);
+  }catch(e){}
+}
+function showWrongX(){
+  const mark=document.getElementById('wrongMark');
+  mark.classList.add('show');
+  setTimeout(()=>mark.classList.remove('show'),550);
+}
+function playCorrectSound(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AudioContext();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.type='sine';
+    osc.frequency.setValueAtTime(520,ctx.currentTime);
+    osc.frequency.setValueAtTime(780,ctx.currentTime+0.12);
+    gain.gain.setValueAtTime(0.16,ctx.currentTime);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime+0.28);
+  }catch(e){}
+}
+function showCorrectCheck(){
+  const mark=document.getElementById('correctMark');
+  mark.classList.add('show');
+  setTimeout(()=>mark.classList.remove('show'),550);
+}
+
+const lessonQuestions=[
+ {w:'Who?',q:'Who is the news about?'},
+ {w:'What?',q:'What happened in the news?'},
+ {w:'Where?',q:'Where did it happen?'},
+ {w:'When?',q:'When did it happen?'},
+ {w:'Why?',q:'Why did it happen or why is it important?'},
+ {w:'How?',q:'How did people respond or how did it happen?'}
+];
+const lessonNews=[
+ {title:'1. Volcanic Eruption in Hawaii This May',text:'This May, Kīlauea volcano in Hawaii had new activity. Scientists watched the volcano. They checked lava and gas. Visitors stayed away from unsafe places. People followed safety news.'},
+ {title:'2. Oil Price in Taiwan',text:'This month, people in Taiwan watched oil prices. Oil prices can make bus, car, and delivery costs higher. Drivers and families may spend more money. People can save money by using buses or trains.'},
+ {title:'3. Famous Attraction in Taiwan',text:'Taipei 101 is a famous place in Taiwan. It is in Taipei. Many people visit it. They see the city, take photos, eat food, and shop. Many tourists like Taipei 101.'}
+];
+let lessonIndex=0;
+document.getElementById('lessonQuestionSquares').innerHTML=lessonQuestions.map((x,i)=>`<div class="questionSquare ${['qWho','qWhat','qWhere','qWhen','qWhy','qHow'][i]}" onclick="this.classList.toggle('open')"><b>${x.w}</b><div class="lessonQuestion">${x.q}</div></div>`).join('');
+function showLessonNews(i){lessonIndex=(i+lessonNews.length)%lessonNews.length;const n=lessonNews[lessonIndex];document.getElementById('lessonNewsBox').innerHTML=`<h3>${n.title}</h3><p>${n.text}</p>`}
+function nextLessonNews(){showLessonNews(lessonIndex+1)}
+function prevLessonNews(){showLessonNews(lessonIndex-1)}
+showLessonNews(0);
+
+const news=[
+ {emoji:'🌏',type:'Earthquake in Taiwan',img:'earthquake',where:'Hualien and eastern Taiwan',when:'April 2024',who:'students, workers, families, and rescue workers in eastern Taiwan',what:'a strong earthquake shook buildings, roads, and homes',why:'Taiwan is near active fault lines, so earthquakes can happen',how:'people evacuated unsafe buildings, listened to official news, and prepared emergency bags',whoQ:'Who felt the earthquake?',whatQ:'What happened in Taiwan?',whenQ:'When did it happen?',whereQ:'Where did it happen?',whyQ:'Why do earthquakes happen in Taiwan?',howQ:'How did people stay safe?',text:'In April 2024, a strong earthquake shook Hualien and eastern Taiwan. Students, workers, and families felt the ground move. Rescuers checked roads and homes. Taiwan has fault lines. People stayed safe by leaving unsafe buildings and listening to the news.',source:'Recent Taiwan earthquake reports'},
+ {emoji:'🌀',type:'Typhoon in the Philippines',img:'typhoon',where:'northern and central Philippines',when:'during typhoon season on a Friday evening',who:'families, students, weather officers, and local responders',what:'a typhoon brought strong wind and heavy rain',why:'warm ocean water helped the typhoon become stronger',how:'families prepared food, water, flashlights, medicine, and stayed indoors',whoQ:'Who warned the families?',whatQ:'What came to the Philippines?',whenQ:'When did the typhoon arrive?',whereQ:'Where did the typhoon happen?',whyQ:'Why can typhoons become strong?',howQ:'How did families prepare?',text:'On a Friday evening, a typhoon brought strong wind and heavy rain to the Philippines. Weather officers warned families. Some students stayed home because roads were dangerous. Families prepared food, water, flashlights, and a radio.',source:'Recent Philippine weather reports'},
+ {emoji:'🌊',type:'Flood in the Philippines',img:'flood',where:'low areas and towns in the Philippines',when:'Saturday morning after many hours of heavy rain',who:'families, rescue workers, and local officials',what:'floodwater covered roads and entered some homes',why:'rivers and drainage systems overflowed after nonstop rain',how:'rescue workers used boats and trucks to bring families to safer places',whoQ:'Who helped the families?',whatQ:'What covered the roads?',whenQ:'When did the flood happen?',whereQ:'Where did the flood happen?',whyQ:'Why did the flood happen?',howQ:'How did rescue workers help?',text:'On Saturday morning, floodwater covered roads in some towns in the Philippines. Families near rivers moved to safe places. Officials told people not to walk or drive in deep water. Rescuers used boats and trucks to help families.',source:'Recent flood reports'},
+ {emoji:'🚨',type:'Tsunami in Japan',img:'tsunami',where:'coastal areas of Japan',when:'after a strong earthquake near the sea',who:'people near the coast, weather officers, and local leaders',what:'Japan gave a tsunami warning for some coastal areas',why:'a strong earthquake under or near the sea can push ocean water and make big waves',how:'people moved to higher ground and waited for official updates',whoQ:'Who moved to higher ground?',whatQ:'What warning did Japan give?',whenQ:'When did the warning happen?',whereQ:'Where was the warning?',whyQ:'Why can a tsunami happen?',howQ:'How did people stay safe?',text:'On Tuesday morning, a strong earthquake happened near the sea. Japan gave a tsunami warning. People near the sea moved to higher ground. Weather officers watched the ocean. People stayed safe by leaving the coast.',source:'Recent Japan tsunami alert reports'},
+ {emoji:'🌋',type:'Volcanic Eruption in Hawaii',img:'volcano',where:'Kīlauea volcano, Hawaii',when:'during recent volcanic activity',who:'scientists, visitors, and nearby residents',what:'Kīlauea volcano showed eruption activity with lava and gas',why:'pressure under the volcano pushed lava and gas to the surface',how:'scientists watched the volcano, and people followed safety rules and official updates',whoQ:'Who watched the volcano?',whatQ:'What volcano showed activity?',whenQ:'When did it happen?',whereQ:'Where is Kīlauea?',whyQ:'Why can a volcano erupt?',howQ:'How can people stay safe?',text:'This May, Kīlauea volcano in Hawaii showed lava and gas. Scientists watched the volcano every day. Visitors and nearby people followed safety rules. They stayed away from unsafe places and listened to updates.',source:'USGS Hawaiian Volcano Observatory'},
+ {emoji:'🔥',type:'Wildfire in Australia',img:'wildfire',where:'parts of Australia with dry grassland and forests',when:'during hot and dry weather',who:'firefighters, families, farmers, and local communities',what:'a wildfire burned land and damaged some homes and farms',why:'hot weather, dry plants, and strong wind helped the fire spread fast',how:'firefighters worked to stop the fire, and people followed warnings or evacuated',whoQ:'Who worked to stop the fire?',whatQ:'What happened in Australia?',whenQ:'When can wildfires happen?',whereQ:'Where did the wildfire happen?',whyQ:'Why can wildfires spread fast?',howQ:'How did people stay safe?',text:'Last summer, a wildfire burned land in parts of Australia. Some homes, farms, and forests were damaged. Firefighters worked to stop the fire. Smoke was in the air. People followed warnings and evacuated.',source:'Recent Australia wildfire reports'}
+];
+document.getElementById('newsIcons').innerHTML=news.map((n,i)=>`<div class="disasterIcon" onclick="showArticle(${i})"><div class="emoji">${n.emoji}</div><h3>${n.type}</h3></div>`).join('');
+function showArticle(i){const n=news[i]; const box=document.getElementById('articleBox'); const imageSrc=`${n.img}.png`; const fallbackSrc=`${n.img}.jpg`; box.innerHTML=`<h3>${n.emoji} ${n.type}</h3><div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><div style="flex:1;min-width:260px;text-align:center;"><img class="articlePhoto" src="${imageSrc}" onerror="this.onerror=null;this.src='${fallbackSrc}'" alt="${n.type} image"></div><div style="flex:2;min-width:300px;"><p>${n.text}</p></div><div style="flex:1;min-width:180px;text-align:center;"><img src="qrcode.png" alt="QR Code" style="width:160px;height:160px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.2);"><p style="font-size:18px;font-weight:bold;">Scan to read the full passage</p></div></div><div class="questionSquares"><div class="questionSquare qWho" onclick="this.classList.toggle('open')"><b>Who?</b><div class="questionAnswer">${n.whoQ}</div></div><div class="questionSquare qWhat" onclick="this.classList.toggle('open')"><b>What?</b><div class="questionAnswer">${n.whatQ}</div></div><div class="questionSquare qWhen" onclick="this.classList.toggle('open')"><b>When?</b><div class="questionAnswer">${n.whenQ}</div></div><div class="questionSquare qWhere" onclick="this.classList.toggle('open')"><b>Where?</b><div class="questionAnswer">${n.whereQ}</div></div><div class="questionSquare qWhy" onclick="this.classList.toggle('open')"><b>Why?</b><div class="questionAnswer">${n.whyQ}</div></div><div class="questionSquare qHow" onclick="this.classList.toggle('open')"><b>How?</b><div class="questionAnswer">${n.howQ}</div></div></div><p class="source">Source basis: ${n.source}</p>`; box.classList.add('show'); box.scrollIntoView({behavior:'smooth',block:'center'});}
+
+const quiz=[
+ {q:'Which question asks about a place?',a:'Where',c:['Who','Where','Why']},
+ {q:'Which question asks about a reason?',a:'Why',c:['When','Why','What']},
+ {q:'Which question asks about people?',a:'Who',c:['Who','How','Where']},
+ {q:'Which question asks about an event?',a:'What',c:['When','What','Why']},
+ {q:'Which question asks about time?',a:'When',c:['Where','When','How']},
+ {q:'Which question asks about the way something happened?',a:'How',c:['How','Who','What']}
+];
+function toggleWhiteboard(id){
+  const board=document.getElementById(id);
+  board.classList.toggle('show');
+  const canvas=board.querySelector('canvas');
+  setTimeout(()=>resizeWhiteboard(canvas),50);
+}
+function clearWhiteboard(canvasId){
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function resizeWhiteboard(canvas){
+  const rect=canvas.getBoundingClientRect();
+  const temp=document.createElement('canvas');
+  temp.width=canvas.width; temp.height=canvas.height;
+  temp.getContext('2d').drawImage(canvas,0,0);
+  canvas.width=Math.max(300,Math.floor(rect.width));
+  canvas.height=Math.max(260,Math.floor(rect.height));
+  canvas.getContext('2d').drawImage(temp,0,0);
+}
+let markerColor='#2f241d';
+let markerSize=5;
+let screenMarkerOn=false;
+function setMarkerColor(color,btn){
+  markerColor=color;
+  document.querySelectorAll('.markerColor').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+function setMarkerSize(size){
+  markerSize=Number(size);
+  document.getElementById('markerSizeLabel').textContent=size;
+}
+function toggleScreenMarker(){
+  screenMarkerOn=!screenMarkerOn;
+  updateScreenMarkerState();
+}
+function updateScreenMarkerState(){
+  const canvas=document.getElementById('screenMarkerCanvas');
+  const btn=document.getElementById('markerToggleBtn');
+  const allowed=currentSlideIndex===2 || currentSlideIndex===3;
+  canvas.classList.toggle('active',screenMarkerOn && allowed);
+  if(btn){btn.textContent=screenMarkerOn?'Marker Off':'Marker On';btn.classList.toggle('active',screenMarkerOn);}
+}
+function clearScreenMarker(){
+  const canvas=document.getElementById('screenMarkerCanvas');
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function resizeScreenMarker(){
+  const canvas=document.getElementById('screenMarkerCanvas');
+  const main=document.getElementById('mainArea');
+  const rect=main.getBoundingClientRect();
+  const temp=document.createElement('canvas');
+  temp.width=canvas.width; temp.height=canvas.height;
+  temp.getContext('2d').drawImage(canvas,0,0);
+  canvas.width=Math.max(300,Math.floor(rect.width));
+  canvas.height=Math.max(300,Math.floor(rect.height));
+  canvas.getContext('2d').drawImage(temp,0,0);
+}
+function setupScreenMarker(){
+  const canvas=document.getElementById('screenMarkerCanvas');
+  const ctx=canvas.getContext('2d');
+  let drawing=false;
+  function pos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  canvas.addEventListener('pointerdown',e=>{if(!canvas.classList.contains('active'))return;resizeScreenMarker();drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=pos(e);ctx.lineWidth=markerSize;ctx.lineCap='round';ctx.strokeStyle=markerColor;ctx.lineTo(p.x,p.y);ctx.stroke();});
+  canvas.addEventListener('pointerup',()=>{drawing=false;ctx.beginPath();});
+  canvas.addEventListener('pointercancel',()=>{drawing=false;ctx.beginPath();});
+  window.addEventListener('resize',resizeScreenMarker);
+  resizeScreenMarker();
+}
+function setupWhiteboard(canvasId){
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  let drawing=false;
+  function pos(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  canvas.addEventListener('pointerdown',e=>{resizeWhiteboard(canvas);drawing=true;const p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=pos(e);ctx.lineWidth=markerSize;ctx.lineCap='round';ctx.strokeStyle=markerColor;ctx.lineTo(p.x,p.y);ctx.stroke();});
+  canvas.addEventListener('pointerup',()=>{drawing=false;ctx.beginPath();});
+  canvas.addEventListener('pointercancel',()=>{drawing=false;ctx.beginPath();});
+}
+setupWhiteboard('canvas3');
+setupWhiteboard('canvas4');
+setupScreenMarker();
+updateScreenMarkerState();
+</script>
+</body>
+</html>
